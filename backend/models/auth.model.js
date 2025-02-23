@@ -11,7 +11,6 @@ const authSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-        minLength : 6,
         required : true,
     },
     role : {
@@ -19,17 +18,31 @@ const authSchema = new mongoose.Schema({
         enum : ["producer" , "consumer"],
         default : "consumer",
     },
+
     productionCapacity : {
         type:Number,
-        required : function(){return this.role === "producer"},
-        
-    }
+        min : 0,
+    },
+    productionType: {
+        type: String,
+        enum: ['solar', 'wind', 'hydro', 'biomass', 'other'],
+    },
+    location: {
+        type: String,
+    },
+    availableEnergy: {
+        type: Number, 
+        min: 0
+    },
 
-
+    consumptionCapacity: {
+        type: Number, 
+        min: 0
+    },
 })
-authSchema.pre("save",function(next){
-    if(this.role === "producer" && !this/)
-})
+// authSchema.pre("save",function(next){
+//     if(this.role === "producer" && !this/)
+// })
 
 const Auth = mongoose.model("users" , authSchema);
 

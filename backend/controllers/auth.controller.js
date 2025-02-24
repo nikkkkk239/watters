@@ -4,6 +4,7 @@ import { generateToken } from "../lib/generateToken.js";
 export const signup = async (req,res)=>{
     const {email , password , name} = req.body;
     console.log(req.body);
+
     if(!email || !password || !name) return res.status(400).json({message : "Please provide complete data."});
     if(password.length < 6){
         return res.status(400).json({message : "Password must be atleast 6 in length"});
@@ -49,4 +50,8 @@ export const signin = async(req,res)=>{
 export const signout = async(req,res)=>{
     res.cookie("token" , "",{maxAge : 0});
     return res.status(200).json({message : "User signed out successfully."});
+}
+export const checkAuth = async(req,res)=>{
+    if(!req.user) return res.status(403).json({message : "Unauthenticated user."});
+    return res.status(200).json(req.user);
 }

@@ -13,12 +13,6 @@ const authSchema = new mongoose.Schema({
         type:String,
         required : true,
     },
-    role : {
-        type:String,
-        enum : ["producer" , "consumer"],
-        default : "consumer",
-    },
-
     productionCapacity : {
         type:Number,
         min : 0,
@@ -26,6 +20,7 @@ const authSchema = new mongoose.Schema({
     productionType: {
         type: String,
         enum: ['solar', 'wind', 'hydro', 'biomass', 'other'],
+        default:"solar"
     },
     location: {
         type: String,

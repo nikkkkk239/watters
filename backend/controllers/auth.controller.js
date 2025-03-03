@@ -2,7 +2,7 @@ import Auth from "../models/auth.model.js";
 import { generateToken } from "../lib/generateToken.js";
 
 export const signup = async (req,res)=>{
-    const {email , password , name} = req.body;
+    const {email , password , name , role} = req.body;
     console.log(req.body);
 
     if(!email || !password || !name) return res.status(400).json({message : "Please provide complete data."});
@@ -18,7 +18,7 @@ export const signup = async (req,res)=>{
         } 
 
         const user = await Auth.create({
-            email , password , name
+            email , password , name , role
         })
         generateToken(res , user._id);
         return res.status(200).json(user);

@@ -1,14 +1,23 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { LuEye } from "react-icons/lu";
+import { LuEyeClosed } from "react-icons/lu";
 
 function Signin() {
   const navigate = useNavigate();
+
   return (
     <div className='flex flex-col md:flex-row  bg-black text-white h-[100vh] items-center space-y-20'>
-      <div className='relative md:h-[100vh] md:max-h-[100%] max-h-[200px] w-full md:w-[50%] overflow-hidden'>
-        <img src="cover.jpeg" className='h-full w-full object-cover' alt="" />
-        <p className='absolute bottom-1  w-full text-center' style={{textShadow : "1px 1px 2px #7CB9E8"}}>Revolutionize the way you consume and share energy</p>
+      <div className='relative md:h-[100vh] md:max-h-[100%] max-h-[200px] w-full md:w-[50%] overflow-hidden flex items-center justify-center'>
+      <DotLottieReact
+      src="https://lottie.host/6af6e600-bec3-482a-ab12-81d2242ba77e/UELxFIJAQV.lottie"
+      loop
+      autoplay
+      className='object-contain min-h-[400px] md:h-[450px]  md:max-h-[full] w-full h-full max-w-[370px] md:min-w-[450px] md:max-w-[full]'
+    />
+
+        <p className='absolute bottom-1 md:top-[600px]  w-full text-center' style={{textShadow : "1px 1px 2px #7CB9E8"}}>Revolutionize the way you consume and share energy</p>
       </div>
       <div className='flex space-y-10 md:w-[50%] md:max-w-full md:p-[20px] flex-col w-full max-w-[500px] items-center'>
         <div>

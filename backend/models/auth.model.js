@@ -23,6 +23,9 @@ const authSchema = new mongoose.Schema({
         required : function(){return this.role == "producer"},
         default : null
     },
+    deviceNo : {
+        type:Number,
+    },
     electricityBillPhoto : {
         type : String,
         required : function(){return this.role == "producer"},

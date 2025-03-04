@@ -9,6 +9,10 @@ const orderSchema = new mongoose.Schema({
         required : true,
         ref : "users",
     },
+    AvailEnergy :{
+        type : Number,
+        required : true,
+    },
     requiredEnergy : {
         type : Number,
         required : true,

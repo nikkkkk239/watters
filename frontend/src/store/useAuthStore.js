@@ -1,5 +1,7 @@
 import {create} from "zustand";
 import { axiosInstance } from "../lib/AxiosInstance";
+import axios from "axios";
+import toast from "react-hot-toast";
 export const useAuthStore = create((set , get)=>({
     authUser : null,
     isCheckingAuth : true,
@@ -11,8 +13,7 @@ export const useAuthStore = create((set , get)=>({
         try {
             set({isSigningIn : true})
             const response = await axiosInstance.post("/auth/signin",details);
-            const data = await response.json();
-            set({authUser : data});
+            set({authUser : response.data});
         } catch (error) {
             console.log("Error in signin : ", error);
             set({authUser : null});
@@ -26,8 +27,8 @@ export const useAuthStore = create((set , get)=>({
             set({isSigningUp : true})
 
             const response = await axiosInstance.post("/auth/signup",details);
-            const data = await response.json();
-            set({authUser : data});
+            set({authUser : response.data});
+            toast.success(`${details.name} Signed Up successfully.`)
         } catch (error) {
             console.log("Error in signup : ", error);
             set({authUser : null});
@@ -47,6 +48,18 @@ export const useAuthStore = create((set , get)=>({
         }
         finally{
             set({isSigningOut : false});
+        }
+    },
+    checkAuth : async()=>{
+        try {
+            const response = await axiosInstance.get("/auth/checkAuth");
+            set({authUser : response.data})
+        } catch (error) {
+          console.log("Error in checkAuth : ",error); 
+          set({authUser : null});
+        } 
+        finally{
+            set({isCheckingAuth : false});
         }
     }
 }))

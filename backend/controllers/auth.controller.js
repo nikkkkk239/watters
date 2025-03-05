@@ -5,7 +5,7 @@ export const signup = async (req,res)=>{
     const {email , password , name , role} = req.body;
     console.log(req.body);
 
-    if(!email || !password || !name) return res.status(400).json({message : "Please provide complete data."});
+    if(!email || !password || !name || !role) return res.status(400).json({message : "Please provide complete data."});
     if(password.length < 6){
         return res.status(400).json({message : "Password must be atleast 6 in length"});
     }

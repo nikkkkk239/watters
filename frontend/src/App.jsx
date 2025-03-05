@@ -7,6 +7,7 @@ import Signin from './pages/Signin'
 import Signup from './pages/Signup'
 import Home from './pages/Home'
 import { useAuthStore } from './store/useAuthStore'
+import Toaster from "react-hot-toast"
 
 function App() {
   const {authUser} = useAuthStore();  
@@ -18,6 +19,7 @@ function App() {
         <Route path='/signup' element={authUser ? <Navigate to={"/"}/> : <Signup/>}/>
         <Route path='/' element={!authUser ? <Navigate to={"/signin"}/> : <Home/>}/>
       </Routes>
+      <Toaster/>
     </>
   )
 }

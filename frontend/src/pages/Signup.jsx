@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { LuEye } from "react-icons/lu";
 import { LuEyeClosed } from "react-icons/lu";
+import { useAuthStore } from '../store/useAuthStore';
+import toast from 'react-hot-toast';
 
 
 
@@ -13,9 +15,14 @@ function Signup() {
   const [name , setName ] = useState("");
   const [role , setRole ] = useState("producer");
   const [isPassShown , setIsPassShown] = useState(false);
+  const {signup} = useAuthStore();
   const handleSignUp = ()=>{
-    
+    signup({email , password , role , name});
+
   }
+  useEffect(()=>{
+    toast.success("Hi aryaman")
+  },[])
   return (
     <div className='flex flex-col md:flex-row  bg-black text-white h-[100vh] items-center space-y-20'>
       
@@ -53,9 +60,9 @@ function Signup() {
             <div className='flex flex-col space-y-1 text-xl w-full'>
               <label htmlFor="">What is your role ? </label>
               <label htmlFor="underline_select" className="sr-only">Underline select</label>
-              <select id="underline_select" className="block py-2.5 px-0 w-full text-xl text-gray-500 bg-transparent  border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
+              <select id="underline_select" defaultValue={"producer"} className="block py-2.5 px-0 w-full text-xl text-gray-500 bg-transparent  border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer">
 
-                <option selected  value="US" className='text-sm' onClick={()=>setRole("producer")}>Producer</option>
+                <option  value="US" className='text-sm' onClick={()=>setRole("producer")}>Producer</option>
                 <option value="CA" onClick={()=>setRole("consumer")} className='text-sm'>Consumer</option>
               </select>
             </div>

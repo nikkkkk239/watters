@@ -1,11 +1,28 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { LuEye } from "react-icons/lu";
 import { LuEyeClosed } from "react-icons/lu";
+import { useAuthStore } from '../store/useAuthStore';
+import toast from 'react-hot-toast';
 
 function Signin() {
   const navigate = useNavigate();
+  const {signin} = useAuthStore();
+  const [isPassShown , setIsPassShown ] = useState(false);
+  const [password , setPassword ] = useState("");
+  const [email , setEmail] = useState("");
+  const handleSignIn = async()=>{
+    if(email.length == 0){
+      toast.error("Email is required.")
+      return;
+    }
+    if(password.length == 0){
+      toast.error("Password is required.")
+      return;
+    }
+    await signin({email , password})
+  }
 
   return (
     <div className='flex flex-col md:flex-row  bg-black text-white h-[100vh] items-center space-y-20'>
@@ -27,15 +44,16 @@ function Signin() {
         <div className='flex flex-col space-y-5 items-center  w-full p-3'>
             <div className='flex flex-col space-y-1  w-full'>
               <label htmlFor="email" className='text-xl'>Email</label>
-              <input type="text" className='p-3 bg-[#33333369]' name='email' id='email' placeholder='johndoe@gmail.com'/>
+              <input type="text" value={email} onChange={(e)=>setEmail(e.target.value)} className='p-3 bg-[#33333369]' name='email' id='email' placeholder='johndoe@gmail.com'/>
             </div>
-            <div className='flex flex-col space-y-1  w-full'>
+            <div className='flex flex-col relative space-y-1  w-full'>
               <label htmlFor="password" className='text-xl'>Password</label>
-              <input type="password" className='p-3 bg-[#33333369]' name='password' id='password' placeholder='******'/>
+              <input type={isPassShown ? "text" :"password"} value={password} onChange={(e)=>setPassword(e.target.value)} className='p-3 bg-[#33333369]' name='password' id='password' placeholder='******'/>
+              <div className='text-white absolute top-12 text-xl cursor-pointer right-3' onClick={()=>setIsPassShown(!isPassShown)}>{isPassShown ? <LuEye/> : <LuEyeClosed/>}</div>
             </div>
         </div>
         <div className='flex flex-col items-center space-y-2'>
-        <button className='md:w-[250px]' style={{background:'linear-gradient(45deg, #7CB9E8,#0066b2, #002D62)',padding:"5px 20px",borderRadius:"30px",cursor:"pointer",fontSize:"20px"}}>Sign In</button>
+        <button className='md:w-[250px]' style={{background:'linear-gradient(45deg, #7CB9E8,#0066b2, #002D62)',padding:"5px 20px",borderRadius:"30px",cursor:"pointer",fontSize:"20px"}} onClick={handleSignIn}>Sign In</button>
           <p>Already have an account ? <span className='text-[#0066b2] cursor-pointer' onClick={()=>navigate("/signup")}>SignUp</span></p>
           
         </div>

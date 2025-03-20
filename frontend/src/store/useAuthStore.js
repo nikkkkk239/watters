@@ -25,7 +25,6 @@ export const useAuthStore = create((set , get)=>({
     signup : async(details)=>{
         try {
             set({isSigningUp : true})
-
             const response = await axiosInstance.post("/auth/signup",details);
             set({authUser : response.data});
             toast.success(`${details.name} Signed Up successfully.`)
@@ -40,8 +39,9 @@ export const useAuthStore = create((set , get)=>({
     signout : async()=>{
         try {
             set({isSigningOut : true});
-            const response = await axiosInstance.post("/auth/signout");
+            const response = await axiosInstance.post("/auth/logout");
             set({authUser : null});
+            toast.success("Logged Out Successfully.")
         } catch (error) {
             console.log("Error in signup : ", error);
             set({authUser : null});

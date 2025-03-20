@@ -20,7 +20,6 @@ const authSchema = new mongoose.Schema({
     },
     totalProduction : {
         type:Number,
-        required : function(){return this.role == "producer"},
         default : null
     },
     deviceNo : {
@@ -28,7 +27,7 @@ const authSchema = new mongoose.Schema({
     },
     electricityBillPhoto : {
         type : String,
-        required : function(){return this.role == "producer"},
+
         default : null,
     },
     location: {
@@ -36,14 +35,17 @@ const authSchema = new mongoose.Schema({
     },
     limitOfSharing: {
         type: Number, 
-        required : function(){return this.role == "producer"},
+
         default : null
     },
     consumedEnergy : {
         type: Number,
-        required : function(){return this.role == "consumer"},
         default : null
     },
+    isVerified:{
+        type: Boolean,
+        default : false,
+    }
     // orders :[
     //     {type:}
     // ]

@@ -16,13 +16,9 @@ function Signup() {
   const [role , setRole ] = useState("producer");
   const [isPassShown , setIsPassShown] = useState(false);
   const {signup} = useAuthStore();
-  const handleSignUp = ()=>{
-    signup({email , password , role , name});
-
+  const handleSignUp = async()=>{
+    await signup({email , password , role , name});
   }
-  useEffect(()=>{
-    toast.success("Hi aryaman")
-  },[])
   return (
     <div className='flex flex-col md:flex-row  bg-black text-white h-[100vh] items-center space-y-20'>
       

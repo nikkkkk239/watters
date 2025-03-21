@@ -20,7 +20,7 @@ const authSchema = new mongoose.Schema({
     },
     totalProduction : {
         type:Number,
-        default : null
+        default : 0
     },
     deviceNo : {
         type:Number,
@@ -32,23 +32,24 @@ const authSchema = new mongoose.Schema({
     },
     location: {
         type: String,
+        default:""
     },
     limitOfSharing: {
         type: Number, 
 
-        default : null
+        default : 0
     },
     consumedEnergy : {
         type: Number,
-        default : null
+        default : 0
     },
     isVerified:{
         type: Boolean,
         default : false,
-    }
-    // orders :[
-    //     {type:}
-    // ]
+    },
+    orders :[
+        {type:mongoose.Schema.Types.ObjectId}
+    ]
 },{timestamps : true})
 
 const Auth = mongoose.model("users" , authSchema);

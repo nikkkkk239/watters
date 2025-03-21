@@ -14,7 +14,7 @@ function Navbar() {
   }
   return (
     <div className='w-full text-white flex justify-between items-center p-7 md:pl-28 md:pr-28' >
-      <div className='text-xl md:text-[25px] ' style={{background:'linear-gradient(45deg, #7CB9E8,#0066b2, #002D62)' ,fontWeight : "600",backgroundClip: "text" , WebkitBackgroundClip:"text",color:"transparent"}} >
+      <div className='text-xl md:text-[25px] cursor-pointer' style={{background:' linear-gradient(45deg, #7CB9E8,#0066b2, #002D62)' ,fontWeight : "600",backgroundClip: "text" , WebkitBackgroundClip:"text",color:"transparent"}} onClick={()=>navigate("/")}>
         Watters
       </div>
       <div className='flex items-center space-x-3 md:space-x-7.5'>

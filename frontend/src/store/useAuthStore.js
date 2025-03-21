@@ -14,6 +14,7 @@ export const useAuthStore = create((set , get)=>({
             set({isSigningIn : true})
             const response = await axiosInstance.post("/auth/signin",details);
             set({authUser : response.data});
+            toast.success(`Signed In successfully.`)
         } catch (error) {
             console.log("Error in signin : ", error);
             set({authUser : null});
@@ -27,7 +28,7 @@ export const useAuthStore = create((set , get)=>({
             set({isSigningUp : true})
             const response = await axiosInstance.post("/auth/signup",details);
             set({authUser : response.data});
-            toast.success(`${details.name} Signed Up successfully.`)
+            toast.success(`Signed Up successfully.`)
         } catch (error) {
             console.log("Error in signup : ", error);
             set({authUser : null});

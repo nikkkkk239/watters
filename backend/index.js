@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { connectDb } from "./lib/connectDb.js";
 import authRouter from "./routes/auth.router.js"
+import orderRouter from "./routes/order.router.js"
 dotenv.config()
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -15,6 +16,7 @@ app.use(cors({
     credentials : true,
 }));
 app.use("/api/auth",authRouter)
+app.use("/api/order",orderRouter)
 
 
 app.listen(PORT,()=>{

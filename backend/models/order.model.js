@@ -19,9 +19,12 @@ const orderSchema = new mongoose.Schema({
     },
     status : {
         type : String,
-        enum :["placed" , "requested"],
+        enum :["placed" , "requested","completed"],
         default : "requested",
+    },amount : {
+        type:Number,
+        default : 0,   
     }
 },{timestamps : true})
-const Order = mongoose.Model("orderes" , orderSchema);
+const Order = mongoose.model("orders" , orderSchema);
 export default Order;

@@ -21,9 +21,9 @@ function Navbar() {
       <div className=' w-[40px] md:w-[100px] h-[40px] flex justify-center items-center hover:bg-white bg-[#333] text-white hover:text-black rounded-full md:text-[20px] cursor-pointer space-x-1 text-[18px]' title="Home" onClick={()=>navigate("/")}>
       <GoHomeFill/> <p className="hidden md:block">Home</p>
         </div>
-        <div className=' w-[40px] md:w-[100px] h-[40px] flex justify-center items-center hover:bg-white bg-[#333] text-white hover:text-black rounded-full md:text-[20px] cursor-pointer space-x-1 text-[18px]' title='Search' onClick={()=>navigate("/search")}>
+        {authUser.role == "consumer" && <div className=' w-[40px] md:w-[100px] h-[40px] flex justify-center items-center hover:bg-white bg-[#333] text-white hover:text-black rounded-full md:text-[20px] cursor-pointer space-x-1 text-[18px]' title='Search' onClick={()=>navigate("/search")}>
         <FiSearch/><p className="hidden md:block">Search</p>
-        </div>
+        </div>}
         
         <div className='  w-[40px] md:w-[100px] h-[40px] flex justify-center items-center hover:bg-white bg-[#333] text-white hover:text-black rounded-full md:text-[20px] cursor-pointer space-x-1 text-[18px]' onClick={()=>navigate("/profile")} title='Profile'>
         <FaUser /><p className="hidden md:block">Profile</p>

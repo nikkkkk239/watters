@@ -53,5 +53,8 @@ export const signout = async(req,res)=>{
 }
 export const checkAuth = async(req,res)=>{
     if(!req.user) return res.status(403).json({message : "Unauthenticated user."});
-    return res.status(200).json(req.user);
+
+    const user = await Auth.findById(req.user._id).populate("orders");
+
+    return res.status(200).json(user);
 }

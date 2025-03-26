@@ -8,6 +8,10 @@ export const useAuthStore = create((set , get)=>({
     isSigningIn : false,
     isSigningUp : false,
     isSigningOut:false,
+    isFetchingCurrent : true,
+    currentOrder : null,
+
+
     
     signin : async(details)=>{
         try {
@@ -61,6 +65,18 @@ export const useAuthStore = create((set , get)=>({
         } 
         finally{
             set({isCheckingAuth : false});
+        }
+    },
+    getCurrentOrder : async(id)=>{
+        try {
+            const response = await axiosInstance.get(`/order/currentOrder/${id}`);
+            set({currentOrder : response.data.order})
+        } catch (error) {
+          console.log("Error in getCurrentOrder : ",error); 
+          set({currentOrder : null});
+        } 
+        finally{
+            set({isFetchingCurrent : false});
         }
     }
 }))

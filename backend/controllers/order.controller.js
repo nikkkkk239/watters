@@ -22,7 +22,7 @@ export const createOrder = async(req,res)=>{
     try {
         const {producer , consumer , AvailEnergy , requiredEnergy } = req.body;
 
-        if(!producer || !consumer || !AvailEnergy || ! requiredEnergy || !status){
+        if(!producer || !consumer || !AvailEnergy || ! requiredEnergy){
             return res.status(400).json({message : "Please Provide complete data."});
         }
         if(requiredEnergy > AvailEnergy){

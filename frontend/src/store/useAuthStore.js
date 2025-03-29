@@ -10,6 +10,7 @@ export const useAuthStore = create((set , get)=>({
     isSigningOut:false,
     isFetchingCurrent : true,
     currentOrder : null,
+    isUpdating : false,
 
 
     
@@ -77,6 +78,22 @@ export const useAuthStore = create((set , get)=>({
         } 
         finally{
             set({isFetchingCurrent : false});
+        }
+    },
+    updateProfile : async(details , id)=>{
+        try {
+            set({isUpdating : true})
+
+            const response = await axiosInstance.post(`/auth/update/${id}` , details);
+            set({authUser : response.data})
+
+        } catch (error) {
+          console.log("Error in updateProfile : ",error); 
+          set({authUser : null});
+        } 
+        finally{
+            set({isUpdating : false})
+
         }
     }
 }))

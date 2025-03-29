@@ -58,3 +58,24 @@ export const checkAuth = async(req,res)=>{
 
     return res.status(200).json(user);
 }
+export const updateProfile = async(req,res)=>{
+    try {
+        const {name , location , deviceNo , electricityBillPhoto , limitOfSharing} = req.body;
+        const id = req.params.id;
+
+        if(!name || !location || !deviceNo || !electricityBillPhoto || !limitOfSharing){
+            return res.status(400).json({message : "Please provide complete data."})
+        }
+
+        const isUser = await Auth.findById(id);
+        if(!isUser) return res.status(404).json({message : "User not found."})
+
+        const user = await Auth.findByIdAndUpdate(id , {name , location , deviceNo , electricityBillPhoto , limitOfSharing},{new : true});
+        return res.status(200).json(user);
+
+
+    } catch (error) {
+        console.log("Error in updateProfile : ",error);
+        return res.status(500).json({message : "Internal server error."})
+    }
+}

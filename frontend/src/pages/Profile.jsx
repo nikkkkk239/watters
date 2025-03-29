@@ -2,14 +2,42 @@ import React, { useState } from 'react'
 import { useAuthStore } from '../store/useAuthStore'
 
 function Profile() {
-  const {authUser} = useAuthStore();
+  const {authUser , isUpdating , updateProfile} = useAuthStore();
   const [name ,setName] = useState(authUser.name);
-  const [email ,setEmail] = useState(authUser.email);
   const [totalEnergy , setTotalEnergy] = useState(authUser.totalProduction)
   const [consumedEnergy , setConsumedEnergy] = useState(authUser.consumedEnergy)
   const [deviceId , setDeviceId] = useState(authUser.deviceNo)
   const [location , setLocation] = useState(authUser.location)
   const [limitOfSharing , setLimitOfSharing] = useState(authUser.limitOfSharing)
+  const  [billPhoto , setBillPhoto] = useState(null);
+
+  async function uploadToCloudinary(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "my_preset"); // Add your preset name
+    formData.append("cloud_name", "dlijwbhg0"); // Add Cloudinary cloud name
+
+    try {
+        const response = await fetch(`https://api.cloudinary.com/v1_1/dlijwbhg0/image/upload`, {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await response.json();
+        console.log("Uploaded File URL:", data.secure_url); // Uploaded file URL
+        setBillPhoto(data.secure_url);
+    } catch (error) {
+        console.error("Upload failed:", error);
+    }
+}
+
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    uploadToCloudinary(file);
+}
+  function handleUpdateClick(){
+    updateProfile({name , deviceNo : deviceId , location , electricityBillPhoto : billPhoto , limitOfSharing : limitOfSharing} , authUser._id)
+  }
 
   return (
     <div className='w-full flex justify-center items-center min-h-[100vh]' >
@@ -27,7 +55,7 @@ function Profile() {
                 
                 <div className='flex flex-col space-y-1  w-full text-white'>
                   <label htmlFor="email" className='text-xl'>Email</label>
-                  <input type="text" value={email} onChange={(e)=>setEmail(e.target.value)} className='p-3 bg-[#33333369] text-white' name='email' id='email' placeholder='johndoe@gmail.com'/>
+                  <input type="text" readOnly value={email}  className='p-3 bg-[#33333369] text-white' name='email' id='email' placeholder='johndoe@gmail.com'/>
                 </div>
 
                 {authUser.role == "producer" && <div className='flex flex-col space-y-1  w-full text-white'>
@@ -57,14 +85,14 @@ function Profile() {
 
                 <div className='flex flex-col space-y-1  w-full text-white'>
                 <label htmlFor="email" className='text-xl'>Electricity Bill</label>
-                <input type="file" name="file-input" id="file-input" className="block w-full border border-gray-200 cursor-pointer shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
+                <input type="file" accept="image/*" name="file-input" id="file-input" className="block w-full border border-gray-200 cursor-pointer shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
                   file:bg-gray-50 file:border-0
                   file:me-4
                   file:py-3 file:px-4
-                  dark:file:bg-neutral-700 dark:file:text-neutral-400"/>
+                  dark:file:bg-neutral-700 dark:file:text-neutral-400" onChange={handleFileUpload}/>
               </div>
 
-                <button className='md:w-[250px] hover:text-white hover:scale-105' style={{transition:"all 0.3s ease-out",background:'linear-gradient(45deg, #7CB9E8,#0066b2, #002D62)',padding:"5px 20px",borderRadius:"30px",cursor:"pointer",fontSize:"20px"}} >Update</button>
+                <button className='md:w-[250px] hover:text-white hover:scale-105' style={{transition:"all 0.3s ease-out",background:'linear-gradient(45deg, #7CB9E8,#0066b2, #002D62)',padding:"5px 20px",borderRadius:"30px",cursor:"pointer",fontSize:"20px"}} onClick={handleUpdateClick}>{ isUpdating ? "..." :"Update"}</button>
                 
                 
             </div>

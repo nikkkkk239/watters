@@ -14,7 +14,7 @@ function Dashboard() {
   console.log("AuthUser : ",authUser);
   console.log("CurrentOrder : ",currentOrder);
   const handleAddClick = ()=>{
-    if(!authUser.electricityBillPhoto){
+    if(!authUser.electricityBillPhoto || !authUser.deviceNo){
       toast.error("Please Complete your Profile.")
       return;
     }

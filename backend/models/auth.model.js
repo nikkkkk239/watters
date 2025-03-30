@@ -24,6 +24,7 @@ const authSchema = new mongoose.Schema({
     },
     deviceNo : {
         type:Number,
+        default : 0,
     },
     electricityBillPhoto : {
         type : String,

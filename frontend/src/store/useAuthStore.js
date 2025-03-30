@@ -11,6 +11,7 @@ export const useAuthStore = create((set , get)=>({
     isFetchingCurrent : true,
     currentOrder : null,
     isUpdating : false,
+    searchResults : [],
 
 
     
@@ -89,11 +90,19 @@ export const useAuthStore = create((set , get)=>({
 
         } catch (error) {
           console.log("Error in updateProfile : ",error); 
-          set({authUser : null});
+          toast.error(error.response.data.message)
         } 
         finally{
             set({isUpdating : false})
 
+        }
+    },shareEnergy:async(details)=>{
+        try {
+            const response = await axiosInstance.post("/energy/",details);
+            toast.success("SuccessFull")
+        } catch (error) {
+            console.log("Error in updateProfile : ",error); 
+            toast.error(error.response.data.message)
         }
     }
 }))

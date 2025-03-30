@@ -1,21 +1,19 @@
 import mongoose from "mongoose";
 
-const EnergySchema = new mongoose.Schema({
-    deviceId : {
-        type : Number,
+const availEnergiesSchema = new mongoose.Schema({
+    owner : {
+        type:mongoose.Schema.Types.ObjectId,
+        ref : "users",
         required : true,
     },
-    userId : {
+    energy : {
         type : Number,
         required : true,
-    },
-    energyReading : {
-        type : Number,
-        required : true,
-        default : 0,
-        min:0
-    }
-},{timestamps : true});
-const Energy = mongoose.model("Energies" , EnergySchema);
+    },requests:[
+        {type:mongoose.Schema.Types.ObjectId ,ref:"orders"}
+    ]
+},{timestamps : true})
+
+const Energy = mongoose.model("energy" , availEnergiesSchema);
 
 export default Energy;

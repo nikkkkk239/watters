@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { connectDb } from "./lib/connectDb.js";
 import authRouter from "./routes/auth.router.js"
 import orderRouter from "./routes/order.router.js"
+import energyRouter from "./routes/energy.router.js"
 dotenv.config()
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -17,6 +18,7 @@ app.use(cors({
 }));
 app.use("/api/auth",authRouter)
 app.use("/api/order",orderRouter)
+app.use("/api/energy",energyRouter)
 
 
 app.listen(PORT,()=>{

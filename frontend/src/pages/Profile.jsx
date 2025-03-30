@@ -8,10 +8,13 @@ function Profile() {
   const [consumedEnergy , setConsumedEnergy] = useState(authUser.consumedEnergy)
   const [deviceId , setDeviceId] = useState(authUser.deviceNo)
   const [location , setLocation] = useState(authUser.location)
+  const [email , setEmail ] = useState(authUser.email)
+  const [isUploading , setIsUploading] = useState(false);
   const [limitOfSharing , setLimitOfSharing] = useState(authUser.limitOfSharing)
   const  [billPhoto , setBillPhoto] = useState(null);
 
   async function uploadToCloudinary(file) {
+    setIsUploading(true);
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", "my_preset"); // Add your preset name
@@ -29,6 +32,8 @@ function Profile() {
     } catch (error) {
         console.error("Upload failed:", error);
     }
+    setIsUploading(false);
+
 }
 
   function handleFileUpload(event) {
@@ -36,7 +41,7 @@ function Profile() {
     uploadToCloudinary(file);
 }
   function handleUpdateClick(){
-    updateProfile({name , deviceNo : deviceId , location , electricityBillPhoto : billPhoto , limitOfSharing : limitOfSharing} , authUser._id)
+    updateProfile({name , deviceNo : deviceId , location : location.length == 0 ? "" : location, electricityBillPhoto : billPhoto , limitOfSharing : limitOfSharing} , authUser._id)
   }
 
   return (
@@ -85,11 +90,13 @@ function Profile() {
 
                 <div className='flex flex-col space-y-1  w-full text-white'>
                 <label htmlFor="email" className='text-xl'>Electricity Bill</label>
-                <input type="file" accept="image/*" name="file-input" id="file-input" className="block w-full border border-gray-200 cursor-pointer shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
+                 <input type="file" accept="image/*" name="file-input" id="file-input" className="block w-full border border-gray-200 cursor-pointer shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
                   file:bg-gray-50 file:border-0
                   file:me-4
                   file:py-3 file:px-4
-                  dark:file:bg-neutral-700 dark:file:text-neutral-400" onChange={handleFileUpload}/>
+                  dark:file:bg-neutral-700 dark:file:text-neutral-400" onChange={handleFileUpload}/>  
+                  {authUser?.electricityBillPhoto ? <a className="text-blue-400" href={authUser?.electricityBillPhoto}>Your Uploaded Electricity Bill</a> : <p className="text-blue-400">Upload an Bill And view it.</p>}
+                  {isUploading && <div>Uploading...</div>}
               </div>
 
                 <button className='md:w-[250px] hover:text-white hover:scale-105' style={{transition:"all 0.3s ease-out",background:'linear-gradient(45deg, #7CB9E8,#0066b2, #002D62)',padding:"5px 20px",borderRadius:"30px",cursor:"pointer",fontSize:"20px"}} onClick={handleUpdateClick}>{ isUpdating ? "..." :"Update"}</button>

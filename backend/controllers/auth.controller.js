@@ -63,9 +63,6 @@ export const updateProfile = async(req,res)=>{
         const {name , location , deviceNo , electricityBillPhoto , limitOfSharing} = req.body;
         const id = req.params.id;
 
-        if(!name || !location || !deviceNo || !electricityBillPhoto || !limitOfSharing){
-            return res.status(400).json({message : "Please provide complete data."})
-        }
 
         const isUser = await Auth.findById(id);
         if(!isUser) return res.status(404).json({message : "User not found."})

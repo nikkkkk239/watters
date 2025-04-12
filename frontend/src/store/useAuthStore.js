@@ -9,7 +9,7 @@ export const useAuthStore = create((set , get)=>({
     isSigningUp : false,
     isSigningOut:false,
     isFetchingCurrent : true,
-    currentOrder : null,
+    currentEnergy : null,
     isUpdating : false,
     searchResults : [],
 
@@ -69,13 +69,15 @@ export const useAuthStore = create((set , get)=>({
             set({isCheckingAuth : false});
         }
     },
-    getCurrentOrder : async(id)=>{
+    getCurrentEnergy : async(id)=>{
         try {
-            const response = await axiosInstance.get(`/order/currentOrder/${id}`);
-            set({currentOrder : response.data.order})
+
+            const response = await axiosInstance.post(`/energy/getSharedEnergy`,{owner : id});
+            console.log("Response from getCurrentEnergy : ",response)
+            set({currentEnergy : response.data})
         } catch (error) {
-          console.log("Error in getCurrentOrder : ",error); 
-          set({currentOrder : null});
+          console.log("Error in getCurrentEnergy : ",error); 
+          set({currentEnergy : null});
         } 
         finally{
             set({isFetchingCurrent : false});
@@ -87,6 +89,7 @@ export const useAuthStore = create((set , get)=>({
 
             const response = await axiosInstance.post(`/auth/update/${id}` , details);
             set({authUser : response.data})
+            toast.success("Profile Updated.")
 
         } catch (error) {
           console.log("Error in updateProfile : ",error); 
@@ -100,8 +103,20 @@ export const useAuthStore = create((set , get)=>({
         try {
             const response = await axiosInstance.post("/energy/",details);
             toast.success("SuccessFull")
+            set({currentEnergy : response.data})
         } catch (error) {
             console.log("Error in updateProfile : ",error); 
+            toast.error(error.response.data.message)
+        }
+    },
+    deleteEnergy:async(id)=>{
+        try {
+            const response = await axiosInstance.delete(`/energy/delete/${id}`);
+            toast.success("SuccessFull")
+            set({currentEnergy:null})
+
+        } catch (error) {
+            console.log("Error in deleteEnergy : ",error); 
             toast.error(error.response.data.message)
         }
     }

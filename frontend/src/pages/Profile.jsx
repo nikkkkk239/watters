@@ -41,7 +41,7 @@ function Profile() {
     uploadToCloudinary(file);
 }
   function handleUpdateClick(){
-    updateProfile({name , deviceNo : deviceId , location : location.length == 0 ? "" : location, electricityBillPhoto : billPhoto , limitOfSharing : limitOfSharing} , authUser._id)
+    updateProfile({name , deviceNo : deviceId , location : location.length == 0 ? "" : location, electricityBillPhoto :  billPhoto ? billPhoto : authUser.electricityBillPhoto , limitOfSharing : limitOfSharing} , authUser._id)
   }
 
   return (

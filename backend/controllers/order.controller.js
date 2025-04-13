@@ -58,3 +58,19 @@ export const placeOrder = async(req,res)=>{
         return res.status(500).json({message : "Internal server error."});
     }
 }
+export const getConsumersOrder = async(req,res)=>{
+    try {
+        const {id} = req.params;
+
+        if(!id){
+            return res.status(400).json({message : "Complete Data is Required."});
+        }
+        const order = await Order.findOne({consumer : id});
+        return res.status(200).json(order);
+    } catch (error) {
+
+        console.log("Error in getConsumersOrder : ",error);
+        return res.status(500).json({message : "Internal server error."});
+        
+    }
+}

@@ -1,13 +1,14 @@
 import Energy from "../models/Energy.model.js";
 
+
 export const createEnergy = async(req,res)=>{
     try {
-        const {owner , energy} = req.body;
+        const {owner , energy ,location} = req.body;
 
         if(!owner || !energy){
             return res.status(400).json({message : "Complete Data Required."});
         }
-        const newEnergy = await Energy.create({owner , energy})
+        const newEnergy = await Energy.create({owner , energy ,location})
 
         return res.status(200).json(newEnergy);
     } catch (error) {
@@ -46,6 +47,20 @@ export const deleteSharedEnergy = async(req,res)=>{
         return res.status(200).json({message : "Energy Deleted ."})
     } catch (error) {
         console.log("Error in deleteSharedEnergy : ",error);
+        res.status(500).json({message : "Internal Server error."})
+    }
+}
+export const searchEnergy = async(req,res)=>{
+    try {
+        const {location} = req.body;
+
+        if(!location){
+            return res.status(400).json({message : "Location Required."}) 
+        }
+        const energy = await Energy.find({location :{ $regex: location, $options: 'i' } }).populate("owner")
+        return res.status(200).json(energy);
+    } catch (error) {
+        console.log("Error in searchEnergy : ",error);
         res.status(500).json({message : "Internal Server error."})
     }
 }

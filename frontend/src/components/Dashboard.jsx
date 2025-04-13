@@ -6,11 +6,14 @@ import toast from 'react-hot-toast';
 Modal.setAppElement("#root");
 
 function Dashboard() {
-  const {authUser , getCurrentEnergy ,deleteEnergy, currentEnergy,shareEnergy} = useAuthStore();
+  const {authUser , getCurrentEnergy ,consumersCurrentOrder , getConsumersCurrentOrder ,deleteEnergy, currentEnergy,shareEnergy} = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   useEffect(()=>{
+      if(authUser._role == "producer"){
       getCurrentEnergy(authUser?._id);
-      console.log("HIIIII")
+      }else{
+        getConsumersCurrentOrder(authUser._id);
+      }
   },[])
   console.log("AuthUser : ",authUser);
   console.log("CurrentOrder : ",currentEnergy);
@@ -30,7 +33,7 @@ function Dashboard() {
   const createdAt = new Date(currentEnergy?.createdAt);
   const formatedDate = createdAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
   const handleShare = ()=>{
-    shareEnergy({owner : authUser?._id , energy : authUser?.limitOfSharing});
+    shareEnergy({owner : authUser?._id , energy : authUser?.limitOfSharing , location : authUser.location});
     setIsOpen(false);
 
   }
@@ -48,12 +51,14 @@ function Dashboard() {
               <p className='mb-1'>Sharing Energy : {currentEnergy.energy} KW</p>
               <p className='mb-3'>Number Of Requests : {currentEnergy.requests.length} </p>
               <button className= ' bg-blue-400 rounded-xl cursor-pointer duration-150 transition-all hover:bg-blue-700 hover:scale-105 p-2' onClick={handleQuit}>Quit Sharing</button>
-            </div> : <p className='text-white w-full h-full text-center text-xl'>No current Placed order</p>}
+            </div> : <p className='text-white w-full h-full text-center text-xl'>Not Sharing Energy Currently.</p>}
           </div>
         </div> : <div className='p-2 flex flex-col gap-4'>
-          <p className='text-xl'> Your Requests </p>
+          <p className='text-xl'> Your Current Order </p>
           <div className='backdrop-blur-md min-h-[250px] bg-[#33333369] text-black rounded-2xl p-4'>
-
+              {
+                consumersCurrentOrder ? <p></p> : <p className='text-white w-full text-center text-[18px]'>No Current Orders</p>
+              }
           </div>
         </div>}
         

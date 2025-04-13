@@ -12,6 +12,30 @@ export const useAuthStore = create((set , get)=>({
     currentEnergy : null,
     isUpdating : false,
     searchResults : [],
+    setSearchResult : (value)=>{
+        set({searchResults : value})
+    },
+    searchEnergies : async(details)=>{
+        try {
+            const response = await axiosInstance.post("/energy/searchEnergy",details);
+            set({searchResults : response.data})
+        } catch (error) {
+            console.log("Error in searchEnergies : ",error); 
+            toast.error(error.response.data.message)
+        }
+    },
+    consumersCurrentOrder : null,
+    getConsumersCurrentOrder : async(id)=>{
+        try{
+
+            const response = await axiosInstance.get(`/order/getConsumersOrder/${id}`)
+            set({consumersCurrentOrder : response.data});
+        }   
+        catch(error){
+            console.log("Error in getConsumersCurrentOrder : ",error); 
+          toast.error(error.response.data.message)
+        }
+    },
 
 
     
@@ -117,6 +141,15 @@ export const useAuthStore = create((set , get)=>({
 
         } catch (error) {
             console.log("Error in deleteEnergy : ",error); 
+            toast.error(error.response.data.message)
+        }
+    },
+    createOrder : async(details)=>{
+        try {
+            const response = await axiosInstance.post('/order/create' ,details);
+            set({consumersCurrentOrder : response.data});
+        } catch (error) {
+            console.log("Error in makeRequest : ",error); 
             toast.error(error.response.data.message)
         }
     }

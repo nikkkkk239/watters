@@ -11,7 +11,11 @@ const availEnergiesSchema = new mongoose.Schema({
         required : true,
     },requests:[
         {type:mongoose.Schema.Types.ObjectId ,ref:"orders"}
-    ]
+    ],
+    location : {
+        type :String ,
+        required:true
+    }
 },{timestamps : true})
 
 const Energy = mongoose.model("energy" , availEnergiesSchema);

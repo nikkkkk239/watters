@@ -6,11 +6,11 @@ import toast from 'react-hot-toast';
 Modal.setAppElement("#root");
 
 function Dashboard() {
-  const {authUser , getCurrentEnergy ,consumersCurrentOrder , getConsumersCurrentOrder ,deleteEnergy, currentEnergy,shareEnergy} = useAuthStore();
+  const {authUser , getCurrentEnergy ,deleteOrdersHavingProducer,deleteOrder,fetchingCustomersOrder ,consumersCurrentOrder , getConsumersCurrentOrder ,deleteEnergy, currentEnergy,shareEnergy} = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   useEffect(()=>{
-      if(authUser._role == "producer"){
-      getCurrentEnergy(authUser?._id);
+      if(authUser.role == "producer"){
+        getCurrentEnergy(authUser?._id);
       }else{
         getConsumersCurrentOrder(authUser._id);
       }
@@ -38,7 +38,11 @@ function Dashboard() {
 
   }
   const handleQuit = ()=>{
+    deleteOrdersHavingProducer(authUser._id);
     deleteEnergy(currentEnergy._id);
+  }
+  const handleOrderCancel = ()=>{
+    deleteOrder(consumersCurrentOrder?._id)
   }
   return (
     <div className='flex flex-col text-white p-3 min-h-[100vh]'>
@@ -55,9 +59,22 @@ function Dashboard() {
           </div>
         </div> : <div className='p-2 flex flex-col gap-4'>
           <p className='text-xl'> Your Current Order </p>
-          <div className='backdrop-blur-md min-h-[250px] bg-[#33333369] text-black rounded-2xl p-4'>
+          <div className='backdrop-blur-md h-fit min-h-[150px] border-1 border-white bg-[#33333369] text-black rounded-2xl p-4'>
               {
-                consumersCurrentOrder ? <p></p> : <p className='text-white w-full text-center text-[18px]'>No Current Orders</p>
+                fetchingCustomersOrder ? <p className='text-white w-full text-center'>Loading...</p> :
+                consumersCurrentOrder ? <div className='text-white  flex flex-col gap-2'>
+                  <div className='flex justify-between gap-1'>
+                    <p className='text-xl'>Supplier : {consumersCurrentOrder?.producer?.name}</p>
+                    <p className='bg-white text-black p-2 pt-1 pb-1'>Status : {consumersCurrentOrder?.status}</p>
+                  </div>
+                  <div>Energy Recieved : {consumersCurrentOrder?.requiredEnergy} KW</div>
+                  <div className='flex justify-between mb-5'>
+                    <div> Amount : ₹  {consumersCurrentOrder?.amount != 0 && consumersCurrentOrder?.amount}</div>
+                    <button className='bg-blue-400 hover:bg-blue-700 rounded-full min-w-[90px] p-2 text-white transition-all
+                    duration-150 cursor-pointer' onClick={handleOrderCancel}>Cancel</button>
+                  </div>
+                  {consumersCurrentOrder?.status == "completed" ? <button className='w-full bg-blue-400 m-auto text-white hover:bg-blue-700 rounded-full cursor-pointer max-w-[350px] p-2'>Make Payment</button> : <p className='m-auto text-center text-[#d1d1d158]'>You will be able to make payment , onces order is accepted.</p>}
+                </div> : <p className='text-white w-full text-center text-[18px]'>No Current Orders</p>
               }
           </div>
         </div>}

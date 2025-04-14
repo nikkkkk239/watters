@@ -1,9 +1,12 @@
 import React, {useActionState, useEffect, useState} from 'react'
 import { useAuthStore } from '../store/useAuthStore';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 function Search() {
   const [searchQuery , setSearchQuery] = useState("");
-  const {searchEnergies ,searchResults ,authUser,setSearchResult ,createOrder} = useAuthStore();
+  const {searchEnergies ,searchResults ,authUser ,isCreatingOrder,setSearchResult ,createOrder} = useAuthStore();
+  const navigate = useNavigate()
   const handleKeyDown = (event) => {
     if (event.key === "Enter" && searchQuery.length != 0) {
       console.log("enter")
@@ -21,8 +24,11 @@ function Search() {
     }
   },[searchQuery])
 
-  const handleRequest = (energy)=>{
-    createOrder({producer : energy.owner._id , consumer : authUser._id , AvailEnergy : energy.energy , requiredEnergy,requiredEnergy : energy.energy})
+  const handleRequest = async(energy)=>{
+    await createOrder({producer : energy.owner._id ,energyId : energy._id , consumer : authUser._id , AvailEnergy : energy.energy,requiredEnergy : energy.energy})
+    if(!isCreatingOrder){
+      navigate("/")
+    }
   }
   return (
     <div className='min-h-[100vh] flex flex-col gap-4 p-4'>
@@ -39,8 +45,7 @@ function Search() {
                 return <div className=' flex flex-col gap-2 p-3  rounded bg-black text-white border-white border-[0.5px]'>
                   <div className='flex justify-between w-full '>
                     <h1 className="text-[20px]">Supplier : {result.owner.name}</h1>
-                    <p>
-                      <input type="Number" />{result.energy} KW</p>
+                    <p>{result.energy} KW</p>
                   </div>
                   <div className='flex justify-between items-end w-full '>
                     <p className='text-[17px]'>{result.location}<br/><span className='text-[15px] text-[#7a7878cc]'>{result.createdAt}</span></p>

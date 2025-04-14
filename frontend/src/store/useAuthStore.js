@@ -12,6 +12,8 @@ export const useAuthStore = create((set , get)=>({
     currentEnergy : null,
     isUpdating : false,
     searchResults : [],
+    fetchingCustomersOrder:true,
+    isCreatingOrder:false,
     setSearchResult : (value)=>{
         set({searchResults : value})
     },
@@ -34,6 +36,9 @@ export const useAuthStore = create((set , get)=>({
         catch(error){
             console.log("Error in getConsumersCurrentOrder : ",error); 
           toast.error(error.response.data.message)
+        }
+        finally{
+            set({fetchingCustomersOrder : false})
         }
     },
 
@@ -146,10 +151,33 @@ export const useAuthStore = create((set , get)=>({
     },
     createOrder : async(details)=>{
         try {
+            set({isCreatingOrder : true})
             const response = await axiosInstance.post('/order/create' ,details);
             set({consumersCurrentOrder : response.data});
+            toast.success("Request Send Successful.")
         } catch (error) {
             console.log("Error in makeRequest : ",error); 
+            toast.error(error.response.data.message)
+        }
+        finally{
+            set({isCreatingOrder : false});
+        }
+    },
+    deleteOrder : async(id)=>{
+        try {
+            const response = await axiosInstance.delete(`/order/delete/${id}`);
+            toast.success("Order cancelled.")
+            set({consumersCurrentOrder : null})
+        } catch (error) {
+            console.log("Error in deleteOrder : ",error); 
+            toast.error(error.response.data.message)
+        }
+    },
+    deleteOrdersHavingProducer : async(id)=>{
+        try {
+            const response = await axiosInstance.delete(`/order/deleteMany/${id}`)
+        } catch (error) {
+            console.log("Error in deleteOrdersHavingProducer : ",error); 
             toast.error(error.response.data.message)
         }
     }

@@ -1,3 +1,4 @@
+import Auth from "../models/auth.model.js";
 import Energy from "../models/Energy.model.js";
 import Order from "../models/order.model.js";
 
@@ -107,8 +108,55 @@ export const deleteManyOrders = async(req,res)=>{
         if(!id){
             return res.status(400).json({message : "Id required."})
         }
+        await Order.deleteMany({producer : id});
+        return res.status(200);
+
     } catch (error) {
         console.log("Error in deleteManyOrders : ",error);
+        return res.status(500).json({message : "Internal server error."});
+    }
+}
+export const getOrdersHavingPro = async(req,res)=>{
+    try {
+        const {id} = req.params;
+
+        if(!id){
+            return res.status(400).json({message : "Id Required."})
+        }
+        console.log(id)
+        const orders = await Order.find({producer : id}).populate("consumer");
+        console.log(orders);
+        return res.status(200).json(orders);
+    } catch (error) {
+        console.log("Error in getOrdersHavingPro : ",error);
+        return res.status(500).json({message : "Internal server error."});
+    }
+}
+
+export const accpetOrder = async(req,res)=>{
+    try {
+        const {id} = req.params;
+
+        if(!id){
+            return res.status(400).json({messsage : "Id required."})
+        }
+        const order = await Order.findById(id);
+        if(!order){
+            return res.status(404).json({message : "Order Not found."})
+        }
+        order.status = "completed";
+        await order.save();
+
+        const user = await Auth.findById(order.producer);
+
+        user.totalProduction -= order.requiredEnergy;
+        await user.save();
+
+        await Order.deleteMany({producer :order.producer , _id:{$ne : id}});
+        await Energy.deleteOne({owner : order.producer});
+        return res.status(200).json(order);
+    } catch (error) {
+        console.log("Error in getOrdersHavingPro : ",error);
         return res.status(500).json({message : "Internal server error."});
     }
 }

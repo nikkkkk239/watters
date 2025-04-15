@@ -2,20 +2,23 @@ import React, { useEffect ,useState} from 'react'
 import { useAuthStore } from '../store/useAuthStore'
 import Modal from "react-modal";
 import toast from 'react-hot-toast';
+import RazorpayButton from './RazorpayButton';
 
 Modal.setAppElement("#root");
 
 function Dashboard() {
-  const {authUser , getCurrentEnergy ,deleteOrdersHavingProducer,deleteOrder,fetchingCustomersOrder ,consumersCurrentOrder , getConsumersCurrentOrder ,deleteEnergy, currentEnergy,shareEnergy} = useAuthStore();
+  const {authUser , getCurrentEnergy ,deleteOrdersHavingProducer,deleteOrder,fetchingCustomersOrder ,consumersCurrentOrder ,accpetOrder, getConsumersCurrentOrder,orderRequests,getOrderRequests ,deleteEnergy, currentEnergy,shareEnergy} = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
   useEffect(()=>{
       if(authUser.role == "producer"){
         getCurrentEnergy(authUser?._id);
+        getOrderRequests(authUser?._id);
       }else{
         getConsumersCurrentOrder(authUser._id);
       }
   },[])
   console.log("AuthUser : ",authUser);
+  console.log("Order Requests : ",orderRequests);
   console.log("CurrentOrder : ",currentEnergy);
   const handleAddClick = ()=>{
     console.log(authUser.deviceNo)
@@ -43,6 +46,11 @@ function Dashboard() {
   }
   const handleOrderCancel = ()=>{
     deleteOrder(consumersCurrentOrder?._id)
+    toast.success("Order cancelled.")
+
+  }
+  const handleAccept = (id)=>{
+    accpetOrder(id);
   }
   return (
     <div className='flex flex-col text-white p-3 min-h-[100vh]'>
@@ -70,19 +78,45 @@ function Dashboard() {
                   <div>Energy Recieved : {consumersCurrentOrder?.requiredEnergy} KW</div>
                   <div className='flex justify-between mb-5'>
                     <div> Amount : ₹  {consumersCurrentOrder?.amount != 0 && consumersCurrentOrder?.amount}</div>
-                    <button className='bg-blue-400 hover:bg-blue-700 rounded-full min-w-[90px] p-2 text-white transition-all
-                    duration-150 cursor-pointer' onClick={handleOrderCancel}>Cancel</button>
+                    {consumersCurrentOrder.status == "requested" && <button className='bg-blue-400 hover:bg-blue-700 rounded-full min-w-[90px] p-2 text-white transition-all
+                    duration-150 cursor-pointer' onClick={handleOrderCancel}>Cancel</button>}
                   </div>
-                  {consumersCurrentOrder?.status == "completed" ? <button className='w-full bg-blue-400 m-auto text-white hover:bg-blue-700 rounded-full cursor-pointer max-w-[350px] p-2'>Make Payment</button> : <p className='m-auto text-center text-[#d1d1d158]'>You will be able to make payment , onces order is accepted.</p>}
+                  {consumersCurrentOrder?.status == "completed" ? <RazorpayButton amount={consumersCurrentOrder?.amount}/>  : <p className='m-auto text-center text-[#d1d1d158]'>You will be able to make payment , onces order is accepted.</p>}
                 </div> : <p className='text-white w-full text-center text-[18px]'>No Current Orders</p>
               }
           </div>
         </div>}
         
       </div>
-      {authUser.role == "producer" && !currentEnergy && <button className='fixed z-20 hover:bg-[#313131] bottom-10 right-10 bg-white text-black w-[60px] h-[60px] rounded-full text-3xl cursor-pointer flex justify-center items-center text-center transition-all duration-300' onClick={handleAddClick}>
+      {authUser.role == "producer" && !currentEnergy && orderRequests.length == 0 && <button className='fixed z-20 hover:bg-[#313131] bottom-10 right-10 bg-white text-black w-[60px] h-[60px] rounded-full text-3xl cursor-pointer flex justify-center items-center text-center transition-all duration-300' onClick={handleAddClick}>
         +
       </button>}
+      {authUser.role == "producer" &&
+        <div className='mt-3 flex flex-col gap-3'>
+        <p className='text-2xl'>Requests </p>
+        <div className='backdrop-blur-md min-h-[100px]  bg-[#33333369] rounded-2xl p-4 text-white'>
+          {
+            orderRequests.length == 0 ? <p className='w-full text-center'>No Requests Yet</p> :
+            <div className='w-full flex flex-col gap-7 p-2'>
+                {
+                  orderRequests.map((order)=>{
+                    return <div className='flex w-full border-1 p-2 hover:scale-105 transition-all duration-75 flex-col gap-3'>
+                      <div className='flex justify-between'>
+                        <p>{order?.consumer?.name}</p>
+                        <p>{order.requiredEnergy} KW</p>
+                      </div>
+                      <div className='flex justify-between'>
+                        <p className='max-w-[200px] text-[#c0c0c0a7]'>{order.consumer.location}</p>
+                        {order.status == "requested" && <button className= ' bg-blue-400 rounded-xl cursor-pointer duration-150 transition-all hover:bg-blue-700 hover:scale-105 p-1 pl-2 pr-2' onClick={()=>handleAccept(order._id)}>Accept</button>}
+                      </div>
+                      {order.status == "completed" && <div>Waiting for Payment.</div>}
+                    </div>
+                  })
+                }
+            </div>
+          }
+        </div>
+      </div>}
       <Modal 
         isOpen={isOpen} 
         onRequestClose={() => setIsOpen(false)}

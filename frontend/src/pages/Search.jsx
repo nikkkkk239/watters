@@ -30,6 +30,8 @@ function Search() {
       navigate("/")
     }
   }
+
+
   return (
     <div className='min-h-[100vh] flex flex-col gap-4 p-4'>
       <h1 className='text-white text-xl'>Search for Energy Based on Location </h1>
@@ -48,7 +50,7 @@ function Search() {
                     <p>{result.energy} KW</p>
                   </div>
                   <div className='flex justify-between items-end w-full '>
-                    <p className='text-[17px]'>{result.location}<br/><span className='text-[15px] text-[#7a7878cc]'>{result.createdAt}</span></p>
+                    <p className='text-[17px]'>{result.location}<br/><span className='text-[15px] text-[#7a7878cc]'>{new Date(result.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</span></p>
                     <button className='bg-blue-400 text-white h-fit pl-4 pr-4 pt-2 pb-2 rounded-2xl cursor-pointer hover:bg-blue-700 transition-all duration-150' onClick={()=>handleRequest(result)}>Request</button>
                   </div>
                 </div>

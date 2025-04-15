@@ -12,11 +12,25 @@ export const useAuthStore = create((set , get)=>({
     currentEnergy : null,
     isUpdating : false,
     searchResults : [],
+    orderRequests : [],
+    getOrderRequests : async(id)=>{
+        try {
+            const response = await axiosInstance.get(`/order/getOrdersHavingPro/${id}`)
+            set({orderRequests : response.data})
+        } catch (error) {
+            console.log("Error in getOrderRequests : ",error); 
+            toast.error(error.response.data.message)
+        }
+    },
     fetchingCustomersOrder:true,
     isCreatingOrder:false,
     setSearchResult : (value)=>{
         set({searchResults : value})
     },
+    setOrder : (value)=>{
+        set({consumersCurrentOrder : value})
+    },
+
     searchEnergies : async(details)=>{
         try {
             const response = await axiosInstance.post("/energy/searchEnergy",details);
@@ -143,6 +157,7 @@ export const useAuthStore = create((set , get)=>({
             const response = await axiosInstance.delete(`/energy/delete/${id}`);
             toast.success("SuccessFull")
             set({currentEnergy:null})
+            set({orderRequests : []})
 
         } catch (error) {
             console.log("Error in deleteEnergy : ",error); 
@@ -166,7 +181,6 @@ export const useAuthStore = create((set , get)=>({
     deleteOrder : async(id)=>{
         try {
             const response = await axiosInstance.delete(`/order/delete/${id}`);
-            toast.success("Order cancelled.")
             set({consumersCurrentOrder : null})
         } catch (error) {
             console.log("Error in deleteOrder : ",error); 
@@ -179,6 +193,18 @@ export const useAuthStore = create((set , get)=>({
         } catch (error) {
             console.log("Error in deleteOrdersHavingProducer : ",error); 
             toast.error(error.response.data.message)
+        }
+    },
+    accpetOrder : async(id)=>{
+        try {
+            const response = await axiosInstance.post(`/order/accept/${id}`);
+            set({currentEnergy : null});
+            set({orderRequests : []});
+            set({orderRequests : [...get().orderRequests , response.json()]});
+            toast.success("Order Accepted.")
+        } catch (error) {
+            console.log("Error in accpetOrder :",error);
+            toast.error(error.reponse.data.message);
         }
     }
 }))

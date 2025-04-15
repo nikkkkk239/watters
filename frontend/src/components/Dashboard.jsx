@@ -36,6 +36,10 @@ function Dashboard() {
   const createdAt = new Date(currentEnergy?.createdAt);
   const formatedDate = createdAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
   const handleShare = ()=>{
+    if(authUser?.limitOfSharing > authUser?.totalProduction){
+      toast.error("Not Enough Energy.")
+      return;
+    }
     shareEnergy({owner : authUser?._id , energy : authUser?.limitOfSharing , location : authUser.location});
     setIsOpen(false);
 

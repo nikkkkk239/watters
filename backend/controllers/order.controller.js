@@ -140,7 +140,7 @@ export const accpetOrder = async(req,res)=>{
         if(!id){
             return res.status(400).json({messsage : "Id required."})
         }
-        const order = await Order.findById(id);
+        const order = await Order.findById(id).populate("consumer");
         if(!order){
             return res.status(404).json({message : "Order Not found."})
         }
@@ -154,7 +154,7 @@ export const accpetOrder = async(req,res)=>{
 
         await Order.deleteMany({producer :order.producer , _id:{$ne : id}});
         await Energy.deleteOne({owner : order.producer});
-        return res.status(200).json(order);
+        return res.status(200).json({order : [order]});
     } catch (error) {
         console.log("Error in getOrdersHavingPro : ",error);
         return res.status(500).json({message : "Internal server error."});

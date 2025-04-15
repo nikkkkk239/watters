@@ -199,8 +199,7 @@ export const useAuthStore = create((set , get)=>({
         try {
             const response = await axiosInstance.post(`/order/accept/${id}`);
             set({currentEnergy : null});
-            set({orderRequests : []});
-            set({orderRequests : [...get().orderRequests , response.json()]});
+            set({orderRequests : response.data.order});
             toast.success("Order Accepted.")
         } catch (error) {
             console.log("Error in accpetOrder :",error);
